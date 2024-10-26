@@ -96,11 +96,18 @@ print(results.params)
 # =============================================================================
 
 #%%                6.模型评价
+#%%% R方
+# 以决定系数R^2作为衡量回归直线对观测值拟合程度的指标，取值范围为[0, 1]，
+# 越接近1，说明拟合优度越好，调用rsquared属性查看拟合结果的R方：
+results.rsquared  #0.9910098
 
+#%%% 可视化
+#除了R方等统计量，还可以通过可视化更直观地查看回归效果。
+import matplotlib.pyplot as plt
+plt.plot(women.height, women.weight,'o')  #观察值
+plt.plot(women.height, results.predict(X))  #估计值的回归直线
 
-
-
-  
+#%%                7.模型调参tuning parameters
 
 
 

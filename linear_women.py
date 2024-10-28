@@ -108,13 +108,60 @@ plt.plot(women.height, women.weight,'o')  #观察值
 plt.plot(women.height, results.predict(X))  #估计值的回归直线
 
 #%%                7.模型调参tuning parameters
+# 从散点图和回归直线可看出，采用简单线性回归的结果效果还可以进一步优化，
+# 为此采取多项式回归进行回归分析 （但是在实际项目中，应避免过度优化导致的过拟合）
 
+import numpy as np
+X=women.height
+Y=women.weight
+#%%% 假设体重与身高X、X^2、X^3存在高幂次线性关系，用numpy库的column_stack()创建特征矩阵X_poly
+X_poly = np.column_stack((X, np.power(X,2), np.power(X,3)))
+print(X_poly)
 
+#%%% 建模拟合
+X_poly = sm.add_constant(X_poly)
+model_poly = sm.OLS(Y, X_poly)
+result_poly = model_poly.fit()
+print(result_poly.summary())
+# =============================================================================
+#                             OLS Regression Results                            
+# ==============================================================================
+# Dep. Variable:                 weight   R-squared:                       1.000
+# Model:                            OLS   Adj. R-squared:                  1.000
+# Method:                 Least Squares   F-statistic:                 1.679e+04
+# Date:                Mon, 28 Oct 2024   Prob (F-statistic):           2.07e-20
+# Time:                        18:42:28   Log-Likelihood:                 1.3441
+# No. Observations:                  15   AIC:                             5.312
+# Df Residuals:                      11   BIC:                             8.144
+# Df Model:                           3                                         
+# Covariance Type:            nonrobust                                         
+# ==============================================================================
+#                  coef    std err          t      P>|t|      [0.025      0.975]
+# ------------------------------------------------------------------------------
+# const       -896.7476    294.575     -3.044      0.011   -1545.102    -248.393
+# x1            46.4108     13.655      3.399      0.006      16.356      76.466
+# x2            -0.7462      0.211     -3.544      0.005      -1.210      -0.283
+# x3             0.0043      0.001      3.940      0.002       0.002       0.007
+# ==============================================================================
+# Omnibus:                        0.028   Durbin-Watson:                   2.388
+# Prob(Omnibus):                  0.986   Jarque-Bera (JB):                0.127
+# Skew:                           0.049   Prob(JB):                        0.939
+# Kurtosis:                       2.561   Cond. No.                     1.25e+09
+# ==============================================================================
 
+print(result_poly.params)
+# =============================================================================
+# const   -896.747633
+# x1        46.410789
+# x2        -0.746184
+# x3         0.004253
+# =============================================================================
+#多项式回归模型中的截距项为-896.7476，而X、X^2、X^3对应的斜率为46.4108、-0.7462和0.0043
 
-
-
-
+#%%% 可视化预测值
+plt.plot(women.height, women.weight,'o')  #观察值
+plt.plot(women.height, result_poly.predict(X_poly))  #估计值的回归直线
+#超级重合，说明采用多项式回归后拟合效果显著提高。
 
 
 
